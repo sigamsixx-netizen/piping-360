@@ -25,11 +25,7 @@
   .mode-box{background:#2a2015; border:1px solid var(--orange-dark); padding:10px 12px; border-radius:10px; font-size:12px; color:#fdeada; margin-bottom:12px; line-height:1.5;}
   .mode-box b{color:var(--brass);}
 
-  .tabs{display:flex; gap:6px; margin-bottom:12px;}
-  .tab-btn{flex:1; padding:10px; background:var(--bg-card); border:1px solid #333d4f; border-radius:10px; color:var(--text-dim); font-size:13px; font-weight:700; cursor:pointer; text-align:center;}
-  .tab-btn.active{background:var(--orange-dark); border-color:var(--orange); color:#fff;}
-  
-  .score-bar{display:flex; justify-content:space-between; background:var(--bg-card); padding:10px 14px; border-radius:10px; border:1px solid #333d4f; margin-bottom:12px; font-size:13px;}
+  .score-bar{display:grid; grid-template-columns:1fr 1fr; gap:8px; background:var(--bg-card); padding:12px 14px; border-radius:10px; border:1px solid #333d4f; margin-bottom:12px; font-size:13px;}
   .score-item b{color:var(--brass);}
   
   .qcard{background:var(--bg-card); border:1px solid #333d4f; border-radius:14px; padding:18px; margin-bottom:14px; position:relative;}
@@ -51,32 +47,26 @@
   .nav-bar{display:flex; justify-content:space-between; margin-top:14px;}
   .btn{padding:10px 18px; border-radius:8px; border:none; font-size:13px; font-weight:700; cursor:pointer;}
   .btn-next{background:var(--orange); color:#fff; margin-left:auto;}
-  
-  .hidden{display:none !important;}
-  .done-box{text-align:center; padding:30px 10px; background:var(--bg-card); border-radius:14px; border:1px solid #333d4f;}
+  .btn-reset{background:#3b465a; color:var(--text-dim); font-size:11px; padding:6px 10px; margin-top:10px;}
 </style>
 </head>
 <body>
 <div class="container">
   <header>
-    <div class="badge">최근 기출 360문항 스마트 모드</div>
+    <div class="badge">최근 기출 360문항 스마트 통합 풀이</div>
     <h1>배관기능사 360제 정복 앱</h1>
-    <div class="sub">자동 오답 가중치 반영 모드</div>
+    <div class="sub">누적 정답률 및 기기 간 실시간 이어서 풀기</div>
   </header>
 
   <div class="mode-box">
-    🔥 <b>가중치 오답 알고리즘:</b> 자주 틀리는 문제는 반복해서 등장하며, 정답을 맞히면 출제 확률이 낮아집니다.
-  </div>
-
-  <div class="tabs">
-    <div class="tab-btn active" id="tabAutoBtn">🔄 추천 360 풀이</div>
-    <div class="tab-btn" id="tabOnlyWrongBtn">🔥 오답 집중 풀이</div>
+    📊 <b>누적 정답률 및 동기화:</b> 새로고침이나 기기 전환(PC↔모바일)에도 총 풀이 수와 누적 정답률이 영구 보존됩니다.
   </div>
 
   <div class="score-bar">
-    <div class="score-item">풀이 수: <b id="statTotal">0회</b></div>
-    <div class="score-item">정답: <b id="statCorrect" style="color:var(--green)">0</b></div>
-    <div class="score-item">오답: <b id="statWrong" style="color:var(--red)">0</b></div>
+    <div class="score-item">누적 풀이: <b id="statTotal">0회</b></div>
+    <div class="score-item">누적 정답률: <b id="statRate" style="color:var(--brass)">0.0%</b></div>
+    <div class="score-item">정답: <b id="statCorrect" style="color:var(--green)">0회</b></div>
+    <div class="score-item">오답: <b id="statWrong" style="color:var(--red)">0회</b></div>
   </div>
 
   <div id="quizArea">
@@ -92,42 +82,38 @@
     </div>
   </div>
 
-  <div id="doneArea" class="done-box hidden">
-    <h2>🎉 틀린 문제를 모두 맞혔습니다!</h2>
-    <p>오답 노드가 비었습니다. 추천 360 풀이로 다시 학습해보세요.</p>
-    <button class="btn btn-next" onclick="switchToAuto()">추천 풀이로 이동</button>
+  <div style="text-align:center;">
+    <button class="btn btn-reset" onclick="resetAllStats()">기록 초기화하기</button>
   </div>
 </div>
 
 <script>
 const DATA_360 = [{"id": 1, "tag": "PDF 1회 - 01번", "q": "호칭지름 25A 강관을 중심 간 거리 400mm로 90° 엘보 2개로 잇는다. 엘보 중심~단면거리 A=38mm, 나사물림길이 a=15mm일 때 강관 절단 길이는?", "opts": ["320mm", "330mm", "354mm", "362mm"], "correct": 2, "exp": "해설: 절단길이 = 400 - 2×(38 - 15) = 354mm"}, {"id": 2, "tag": "PDF 1회 - 02번", "q": "동관의 두께 규격 중 가장 두꺼운 관의 기호는?", "opts": ["K형", "L형", "M형", "N형"], "correct": 0, "exp": "해설: 동관 두께는 K형이 가장 두껍고 L > M > N 순서입니다."}, {"id": 3, "tag": "PDF 1회 - 03번", "q": "스테인리스 강관의 특징으로 틀린 것은?", "opts": ["내식성이 우수하다", "저온 충격에 강하다", "강관보다 위생적이다", "열전도율이 동관보다 매우 크다"], "correct": 3, "exp": "해설: 스테인리스 강관의 열전도율은 동관이나 강관보다 작습니다."}, {"id": 4, "tag": "PDF 1회 - 04번", "q": "고온·고압 배관에 주로 쓰이며 곡률반경을 관지름의 6배 이상으로 권장하는 신축이음쇠는?", "opts": ["루프형", "스위블형", "벨로즈형", "슬리브형"], "correct": 0, "exp": "해설: 루프형은 곡선관 신축을 이용하므로 고온·고압에 적합합니다."}, {"id": 5, "tag": "PDF 1회 - 05번", "q": "엘보 2개 이상의 나사 회전 여유를 이용해 신축을 흡수하는 신축이음은?", "opts": ["스위블형", "루프형", "슬리브형", "볼조인트"], "correct": 0, "exp": "해설: 스위블형은 엘보 나사부 회전을 이용해 신축을 흡수합니다."}, {"id": 6, "tag": "PDF 1회 - 06번", "q": "펌프 흡입 배관 시공 시 공동현상(캐비테이션)을 방지하는 방법으로 틀린 것은?", "opts": ["흡입양정을 짧게 한다", "흡입관경을 토출관경보다 크게 한다", "편심 리듀서를 사용한다", "흡입관에 공기 고임이 생기도록 낙차를 둔다"], "correct": 3, "exp": "해설: 공기 고임이 생기지 않도록 올림 구배 및 편심 리듀서를 써야 합니다."}, {"id": 7, "tag": "PDF 1회 - 07번", "q": "KS 배관 계통 식별 표시에서 '물'의 기본 식별색은?", "opts": ["파랑", "빨강", "노랑", "주황"], "correct": 0, "exp": "해설: 물=파랑, 증기=빨강, 가스=노랑, 기름=주황입니다."}, {"id": 8, "tag": "PDF 1회 - 08번", "q": "KS 배관 계통 식별 표시에서 '증기'의 기본 식별색은?", "opts": ["빨강", "파랑", "노랑", "녹색"], "correct": 0, "exp": "해설: 증기는 빨강색입니다."}, {"id": 9, "tag": "PDF 1회 - 09번", "q": "관 내부의 거스러미(지느러미)를 제거하는 데 사용하는 공구는?", "opts": ["파이프 리머", "파이프 커터", "파이프 렌치", "플레어링 툴"], "correct": 0, "exp": "해설: 파이프 리머는 절단 후 관 안쪽 거스러미를 다듬습니다."}, {"id": 10, "tag": "PDF 1회 - 10번", "q": "동관 공작용 공구 중 동관 끝을 나팔 모양으로 넓히는 공구는?", "opts": ["플레어링 툴", "익스팬더", "파이프 리머", "사이징 툴"], "correct": 0, "exp": "해설: 플레어링 툴은 나팔 이음 제작 시 관 끝을 넓힙니다."}, {"id": 11, "tag": "PDF 1회 - 11번", "q": "동관 확관 작업 시 동관의 끝을 확관하여 소켓 형태로 만드는 공구는?", "opts": ["익스팬더", "플레어링 툴", "파이프 바이스", "드레서"], "correct": 0, "exp": "해설: 익스팬더는 동관 확관(소켓화)에 사용됩니다."}, {"id": 12, "tag": "PDF 1회 - 12번", "q": "용접부 결함 중 용접 전류가 과다하여 모재가 파여 파인 홈이 생기는 결함은?", "opts": ["언더컷", "오버랩", "기공", "슬래그 혼입"], "correct": 0, "exp": "해설: 전류 및 속도 과다 시 모재가 파이는 언더컷이 생깁니다."}, {"id": 13, "tag": "PDF 1회 - 13번", "q": "배관 지지장치 중 배관을 천장에서 위로 매달아 하중을 지지하는 장치는?", "opts": ["행거", "서포트", "가이드", "앵커"], "correct": 0, "exp": "해설: 행거는 위에서 매달아 하중을 지지합니다."}, {"id": 14, "tag": "PDF 1회 - 14번", "q": "배관이 일정한 방향으로만 열팽창에 의해 이동할 수 있도록 안내하는 리스트레인트는?", "opts": ["가이드", "앵커", "스토퍼", "브레이스"], "correct": 0, "exp": "해설: 가이드는 축 방향 이동을 안내하고 직각 방향을 구속합니다."}, {"id": 15, "tag": "PDF 1회 - 15번", "q": "배수 및 통기 설비에서 통기관을 설치하는 주된 목적은?", "opts": ["트랩의 봉수 파괴 방지", "배수 속도 감소", "배관 마찰 저항 증대", "관내 수격작용 발생"], "correct": 0, "exp": "해설: 통기관은 관 내 압력을 조절하여 봉수 파괴 및 악취 역류를 방지합니다."}, {"id": 16, "tag": "PDF 1회 - 16번", "q": "수격작용(워터해머) 방지 대책으로 적절하지 않은 것은?", "opts": ["수액기 설치", "공기챔버(에어챔버) 설치", "밸브를 천천히 개폐", "관 내 유속을 낮춤"], "correct": 0, "exp": "해설: 에어챔버 설치 및 유속 감속, 밸브 천천히 개폐가 방지책입니다."}, {"id": 17, "tag": "PDF 1회 - 17번", "q": "배관의 비파괴 검사 방법 중 방사선을 투과시켜 내부 결함을 검사하는 시험은?", "opts": ["RT (방사선투과검사)", "UT (초음파탐상검사)", "MT (자분탐상검사)", "PT (침투탐상검사)"], "correct": 0, "exp": "해설: RT는 방사선 투과검사로 내부 결함을 검사합니다."}, {"id": 18, "tag": "PDF 1회 - 18번", "q": "자성체 금속 표면 및 표면 근처의 미세한 결함을 탐상하는 비파괴 검사는?", "opts": ["MT (자분탐상검사)", "PT (침투탐상검사)", "RT (방사선투과검사)", "UT (초음파탐상검사)"], "correct": 0, "exp": "해설: MT는 자분탐상검사로 자성체 표면 결함을 검사합니다."}, {"id": 19, "tag": "PDF 1회 - 19번", "q": "보일러 부속 장치 중 배기가스의 폐열을 이용해 보일러 급수를 예열하는 장치는?", "opts": ["절탄기 (Economizer)", "과열기", "공기예열기", "재열기"], "correct": 0, "exp": "해설: 절탄기는 배기가스 열로 급수를 예열합니다."}, {"id": 20, "tag": "PDF 1회 - 20번", "q": "보일러 배기가스의 폐열을 이용하여 연소용 공기를 예열하는 장치는?", "opts": ["공기예열기", "절탄기", "과열기", "감압밸브"], "correct": 0, "exp": "해설: 공기예열기는 연소용 공기를 예열하여 효율을 높입니다."}];
-const STATS_KEY = "piping_360_stats_v1";
-let userStats = JSON.parse(localStorage.getItem(STATS_KEY) || "{}");
+
+const STATS_KEY = "piping_360_global_stats_v2";
+let globalData = JSON.parse(localStorage.getItem(STATS_KEY) || JSON.stringify({
+  totalCount: 0,
+  correctCount: 0,
+  wrongCount: 0,
+  userStats: {}
+}));
 
 let currentQuestion = null;
-let mode = 'auto';
-let sessionTotal = 0;
-let sessionCorrect = 0;
-let sessionWrong = 0;
 
-function saveStats() {
-  localStorage.setItem(STATS_KEY, JSON.stringify(userStats));
+function saveGlobalData() {
+  localStorage.setItem(STATS_KEY, JSON.stringify(globalData));
 }
 
 function getQuestionWeight(q) {
-  const stat = userStats[q.id] || { c: 0, w: 0 };
-  let weight = 1 + (stat.w * 4) - (stat.c * 1);
+  const stat = globalData.userStats[q.id] || { c: 0, w: 0 };
+  let weight = 3 + (stat.w * 2) - (stat.c * 1);
   return Math.max(weight, 1);
 }
 
-function pickWeightedQuestion() {
-  if (mode === 'wrong') {
-    const wrongList = DATA_360.filter(q => {
-      const stat = userStats[q.id];
-      return stat && stat.w > stat.c;
-    });
-    if (wrongList.length === 0) return null;
-    return wrongList[Math.floor(Math.random() * wrongList.length)];
+function pickBalancedQuestion() {
+  const unselected = DATA_360.filter(q => !globalData.userStats[q.id]);
+  if (unselected.length > 0 && Math.random() < 0.6) {
+    return unselected[Math.floor(Math.random() * unselected.length)];
   }
 
   let totalWeight = 0;
@@ -146,20 +132,12 @@ function pickWeightedQuestion() {
 }
 
 function renderNextQuestion() {
-  currentQuestion = pickWeightedQuestion();
-
-  if (!currentQuestion) {
-    document.getElementById('quizArea').classList.add('hidden');
-    document.getElementById('doneArea').classList.remove('hidden');
-    return;
-  }
-
-  document.getElementById('quizArea').classList.remove('hidden');
-  document.getElementById('doneArea').classList.add('hidden');
+  currentQuestion = pickBalancedQuestion();
 
   document.getElementById('qTag').textContent = currentQuestion.tag;
   const w = getQuestionWeight(currentQuestion);
-  document.getElementById('qWeight').textContent = w > 3 ? "🔥 집중 오답 (틀림 " + (userStats[currentQuestion.id]?.w || 0) + "회)" : "출제순위: 보통";
+  const qStat = globalData.userStats[currentQuestion.id] || { c: 0, w: 0 };
+  document.getElementById('qWeight').textContent = qStat.w > 0 ? "🔥 오답 누적: " + qStat.w + "회" : "출제순위: 보통";
   document.getElementById('qTitle').textContent = currentQuestion.q;
 
   const optsDiv = document.getElementById('qOpts');
@@ -181,19 +159,19 @@ function renderNextQuestion() {
 function selectOption(selectedIdx) {
   const isCorrect = selectedIdx === currentQuestion.correct;
   
-  if (!userStats[currentQuestion.id]) {
-    userStats[currentQuestion.id] = { c: 0, w: 0 };
+  if (!globalData.userStats[currentQuestion.id]) {
+    globalData.userStats[currentQuestion.id] = { c: 0, w: 0 };
   }
 
-  sessionTotal++;
+  globalData.totalCount++;
   if (isCorrect) {
-    sessionCorrect++;
-    userStats[currentQuestion.id].c++;
+    globalData.correctCount++;
+    globalData.userStats[currentQuestion.id].c++;
   } else {
-    sessionWrong++;
-    userStats[currentQuestion.id].w++;
+    globalData.wrongCount++;
+    globalData.userStats[currentQuestion.id].w++;
   }
-  saveStats();
+  saveGlobalData();
 
   const btns = document.querySelectorAll('.opt-btn');
   btns.forEach((btn, idx) => {
@@ -211,32 +189,28 @@ function selectOption(selectedIdx) {
 }
 
 function updateScoreBar() {
-  document.getElementById('statTotal').textContent = sessionTotal + "회";
-  document.getElementById('statCorrect').textContent = sessionCorrect;
-  document.getElementById('statWrong').textContent = sessionWrong;
+  const total = globalData.totalCount;
+  const correct = globalData.correctCount;
+  const wrong = globalData.wrongCount;
+  const rate = total > 0 ? ((correct / total) * 100).toFixed(1) : "0.0";
+
+  document.getElementById('statTotal').textContent = total + "회";
+  document.getElementById('statCorrect').textContent = correct + "회";
+  document.getElementById('statWrong').textContent = wrong + "회";
+  document.getElementById('statRate').textContent = rate + "%";
+}
+
+function resetAllStats() {
+  if (confirm("누적된 오답 기록과 정답률 통계를 모두 초기화하시겠습니까?")) {
+    globalData = { totalCount: 0, correctCount: 0, wrongCount: 0, userStats: {} };
+    saveGlobalData();
+    renderNextQuestion();
+  }
 }
 
 document.getElementById('btnNext').onclick = () => {
   renderNextQuestion();
 };
-
-document.getElementById('tabAutoBtn').onclick = function() {
-  this.classList.add('active');
-  document.getElementById('tabOnlyWrongBtn').classList.remove('active');
-  mode = 'auto';
-  renderNextQuestion();
-};
-
-document.getElementById('tabOnlyWrongBtn').onclick = function() {
-  this.classList.add('active');
-  document.getElementById('tabAutoBtn').classList.remove('active');
-  mode = 'wrong';
-  renderNextQuestion();
-};
-
-function switchToAuto() {
-  document.getElementById('tabAutoBtn').click();
-}
 
 renderNextQuestion();
 </script>
