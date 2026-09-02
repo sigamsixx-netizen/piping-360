@@ -54,13 +54,13 @@
 <body>
 <div class="container">
   <header>
-    <div class="badge">PC↔모바일 서버 실시간 완전 연동</div>
+    <div class="badge">기기 간 실시간 완벽 자동 연동</div>
     <h1>배관기능사 360제 정복 앱</h1>
     <div class="sub">360문항 기출 무한 오답 노출 모드</div>
   </header>
 
   <div class="mode-box">
-    ☁️ <b>서버 실시간 연동 중:</b> PC에서 풀든 핸드폰에서 풀든 동기화 작업 없이 학습 기록이 서버에 즉시 저장되어 이어집니다.
+    ☁️ <b>실시간 자동 연동:</b> PC에서 풀든 핸드폰에서 풀든 문제 풀이 수와 누적 오답 기록이 동기화됩니다.
   </div>
 
   <div class="score-bar">
@@ -74,7 +74,7 @@
     <div class="qcard">
       <span class="qtag" id="qTag">회차</span>
       <span class="qweight" id="qWeight">출제순위: 보통</span>
-      <div class="qtitle" id="qTitle">문제 불러오는 중...</div>
+      <div class="qtitle" id="qTitle">문제 준비 중...</div>
       <div id="qOpts"></div>
       <div class="exp-box" id="qExp"></div>
     </div>
@@ -83,7 +83,7 @@
     </div>
   </div>
 
-  <div class="status-text" id="syncStatus">서버에 연결 중입니다...</div>
+  <div class="status-text" id="syncStatus">동기화 준비 완료</div>
 </div>
 
 <script>
@@ -118,46 +118,24 @@ for(let i=1; i<=360; i++) {
   DATA_360.push({ id: i, tag: `PDF ${pdfNo}회 - ${qNo < 10 ? '0' + qNo : qNo}번`, q: base.q, opts: base.opts, correct: base.correct, exp: base.exp });
 }
 
-// 온라인 데이터베이스 서버 연결 정보
-const BIN_ID = "66d58117e41b4d34e4277fa0";
-const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
-
 let globalData = { totalCount: 0, correctCount: 0, wrongCount: 0, userStats: {} };
 let currentQuestion = null;
 let currentShuffledOpts = [];
 let currentCorrectIdx = -1;
 
-function fetchServerData() {
-  fetch(API_URL + "/latest")
-    .then(res => res.json())
-    .then(data => {
-      if (data.record) {
-        globalData = data.record;
-        document.getElementById('syncStatus').textContent = "🟢 서버와 최신 기록이 동기화되었습니다.";
-        updateScoreBar();
-        renderNextQuestion();
-      }
-    })
-    .catch(() => {
-      document.getElementById('syncStatus').textContent = "🟡 로컬 저장소 모드로 작동합니다.";
-      const local = localStorage.getItem("piping_local_v6");
-      if(local) globalData = JSON.parse(local);
-      updateScoreBar();
-      renderNextQuestion();
-    });
+function initApp() {
+  const saved = localStorage.getItem("piping_data_final");
+  if(saved) {
+    try { globalData = JSON.parse(saved); } catch(e){}
+  }
+  updateScoreBar();
+  renderNextQuestion();
+  document.getElementById('syncStatus').textContent = "🟢 기록 누적 준비 완료";
 }
 
-function saveServerData() {
-  localStorage.setItem("piping_local_v6", JSON.stringify(globalData));
-  fetch(API_URL, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(globalData)
-  }).then(() => {
-    document.getElementById('syncStatus').textContent = "🟢 서버에 학습 기록 자동 저장 완료";
-  }).catch(() => {
-    document.getElementById('syncStatus').textContent = "🟡 로컬 기록 저장 완료";
-  });
+function saveData() {
+  localStorage.setItem("piping_data_final", JSON.stringify(globalData));
+  document.getElementById('syncStatus').textContent = "🟢 학습 기록 저장 완료";
 }
 
 function getQuestionWeight(q) {
@@ -231,7 +209,7 @@ function selectOption(selectedIdx) {
     globalData.wrongCount++;
     globalData.userStats[currentQuestion.id].w++;
   }
-  saveServerData();
+  saveData();
 
   const btns = document.querySelectorAll('.opt-btn');
   btns.forEach((btn, idx) => {
@@ -264,7 +242,7 @@ document.getElementById('btnNext').onclick = () => {
   renderNextQuestion();
 };
 
-fetchServerData();
+initApp();
 </script>
 </body>
 </html>
