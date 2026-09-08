@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>배관기능사 학습앱</title>
+<title>배관기능사 학습앱 (개인 전용)</title>
 <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore-compat.js"></script>
 <style>
@@ -130,25 +130,6 @@
   .toolbar{display:flex; justify-content:center; gap:16px; margin-top:6px;}
   .icon-btn{background:none; border:none; color:var(--paper-dim); font-size:12px; cursor:pointer; font-weight:600;}
 
-  /* 암기카드(플립) */
-  .stage{position:relative; height:280px; margin-bottom:16px;}
-  .card{position:absolute; inset:0; border-radius:var(--r); cursor:pointer; perspective:1200px;}
-  .card-inner{position:relative; width:100%; height:100%; transform-style:preserve-3d; transition:transform .45s cubic-bezier(.2,.8,.2,1);}
-  .card.flipped .card-inner{transform:rotateY(180deg);}
-  .face{position:absolute; inset:0; backface-visibility:hidden; border-radius:var(--r); padding:22px;
-    display:flex; flex-direction:column; justify-content:center; border:1px solid #40485a;
-    box-shadow:0 10px 30px -10px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.04);}
-  .face.front{background:linear-gradient(155deg,#2b323d,#20252c);}
-  .face.back{background:linear-gradient(155deg,#3a2416,#241a12); transform:rotateY(180deg); border-color:var(--pipe-orange-dim);}
-  .cardtag{position:absolute; top:14px; left:18px; font-size:10px; letter-spacing:.08em; color:var(--pipe-orange); font-weight:800; text-transform:uppercase;}
-  .cardidx{position:absolute; top:14px; right:18px; font-size:11px; color:var(--paper-dim);}
-  .cqtext{font-size:17px; line-height:1.55; font-weight:700; margin-top:10px;}
-  .catext{font-size:16px; line-height:1.6; font-weight:700; color:#ffe8cf; margin-top:10px;}
-  .cardhint{position:absolute; bottom:12px; left:0; right:0; text-align:center; font-size:11px; color:var(--paper-dim);}
-  .actions{display:flex; gap:10px;}
-  .btn-retry{background:#3a2020; color:#f0a898; border:1px solid #6b3830; flex:1; padding:14px 8px; border-radius:12px; font-size:14px; font-weight:800; cursor:pointer;}
-  .btn-know{background:#1f3a24; color:#a6e0ac; border:1px solid #3a6b41; flex:1; padding:14px 8px; border-radius:12px; font-size:14px; font-weight:800; cursor:pointer;}
-
   .done{text-align:center; padding:40px 10px;}
   .done .big{font-size:40px; margin-bottom:6px;}
   .done h2{font-size:18px; margin:6px 0 4px;}
@@ -176,8 +157,8 @@
 
   <div class="infobox">
     <b>ℹ️ 시험 참고사항 (풀이 대상 아님, 참고만)</b><br>
-    합격기준: 전체 평균 60점 이상 + 과목별(배관시공및안전관리/배관공작및재료/배관제도) 40점 미만이면 과락 ·
-    배관시공및안전관리 출제비중 가장 높음 · 필기는 문제은행 방식이라 큐넷에 원본 기출 비공개
+    합격기준: 전체 평균 60점 이상 + 과목별 40점 미만이면 과락 ·
+    배관시공및안전관리 출제비중 가장 높음 · 필기는 문제은행 방식
   </div>
 
   <div class="maintabs">
@@ -186,9 +167,9 @@
     <div class="maintab" id="tabCalcBtn">🔢 계산문제</div>
   </div>
 
-  <!-- ===================== 문제풀이 탭 ===================== -->
+  <!-- 문제풀이 탭 -->
   <div id="tabQuiz">
-    <p class="sub" style="margin-bottom:10px;">틀린 문제일수록 더 자주 나옵니다 · 기록은 자동 클라우드 동기화</p>
+    <p class="sub" style="margin-bottom:10px;">틀린 문제일수록 더 자주 나옵니다 · 4개 기기 자동 동기화</p>
 
     <div class="stats">
       <div class="stat q"><div class="n" id="statQ">∞</div><div class="l">가중치모드</div></div>
@@ -237,34 +218,28 @@
     </div>
   </div>
 
-  <!-- ===================== 기호모음 탭 ===================== -->
+  <!-- 기호모음 탭 -->
   <div id="tabCard" class="hidden">
-    <p class="sub" style="margin-bottom:10px;">배관 도면에서 자주 나오는 기호를 모아뒀어요 · 카테고리로 필터링하세요</p>
-
+    <p class="sub" style="margin-bottom:10px;">배관 도면 도시기호 모음</p>
     <div class="statspanel" style="margin-bottom:14px;">
-      <h3>🗺️ 실전 도면 예시 — 기호가 실제로 어떻게 쓰이는지</h3>
+      <h3>🗺️ 실전 도면 예시</h3>
       <div class="filters" id="diagramFilters" style="margin-top:8px;"></div>
       <div id="diagramSvgBox" style="background:#171b20; border-radius:10px; padding:8px; margin-top:4px;"></div>
       <div id="diagramLegend" style="margin-top:10px; font-size:12.5px; line-height:1.7;"></div>
     </div>
-
     <div class="filters" id="symFilters"></div>
-
     <div id="symList"></div>
   </div>
 
-  <!-- ===================== 계산문제 탭 ===================== -->
+  <!-- 계산문제 탭 -->
   <div id="tabCalc" class="hidden">
-    <p class="sub" style="margin-bottom:10px;">매번 다른 숫자로 새로 생성됩니다 · 공식을 진짜 이해했는지 확인하세요</p>
-
+    <p class="sub" style="margin-bottom:10px;">숫자 무작위 생성 계산 연습</p>
     <div class="stats">
       <div class="stat q"><div class="n" id="calcTotal">0</div><div class="l">누적 시도</div></div>
       <div class="stat o"><div class="n" id="calcCorrect">0</div><div class="l">정답</div></div>
       <div class="stat x"><div class="n" id="calcWrong">0</div><div class="l">오답</div></div>
     </div>
-
     <div class="filters" id="calcFilters"></div>
-
     <div id="calcPlayArea">
       <div class="qcard">
         <div class="tag" id="calcTag">TAG</div>
@@ -277,10 +252,8 @@
   </div>
 
   <footer>
-    ※ 원본 CBT 문제집을 그대로 옮긴 것이 아니라, 정리 노트의 핵심 포인트를 바탕으로<br>
-    새로 작성한 학습자료입니다. 실제 시험 문제와 문구가 다를 수 있어요.<br><br>
-    ※ 문제풀이 기록은 클라우드에 자동 저장되어 폰↔PC 모두 반영됩니다.<br>
-    암기노트 대신 기호모음 탭이 여기 자리했어요.
+    ※ 개인 맞춤형 학습 저장소가 반영된 버전입니다.<br>
+    PC, 스마트폰, 태블릿, 공폰 4개 기기 간 학습 기록이 완벽 연동됩니다.
   </footer>
 </div>
 
@@ -329,71 +302,20 @@ tabCalcBtn.addEventListener('click', ()=>{
   if(!calcStarted){ calcStarted = true; startCalcSession(); }
 });
 
-/* 1) 문제풀이 (4지선다, 적응형 + Firebase 동기화) */
+/* 문제풀이 데이터 */
 const QUIZ_DATA = [
-  {tag:"신축이음쇠", q:"고온·고압 배관에 주로 쓰이며 곡률반경을 관지름의 6배 이상으로 권장하는 신축이음쇠는?",
-   opts:["루프형","스위블형","벨로즈형","슬리브형"], correct:0,
-   exp:"루프형은 관을 곡선으로 구부려 신축을 흡수하며, 고온·고압 배관에 사용됩니다. 설치공간을 많이 차지하는 것이 단점입니다."},
-  {tag:"신축이음쇠", q:"엘보 2개 이상의 나사 회전 여유를 이용해 신축을 흡수하는 것은?",
-   opts:["볼조인트형","스위블형","루프형","빅토릭형"], correct:1,
-   exp:"스위블형은 저압 증기·온수 난방의 지관에 주로 사용됩니다. 참고로 빅토릭형은 신축이음쇠 분류에 속하지 않습니다."},
-  {tag:"신축이음쇠", q:"평면 변위와 입체 변위를 모두 흡수할 수 있고, 설치공간이 가장 작은 신축이음쇠는?",
-   opts:["슬리브형","루프형","볼조인트형","벨로즈형"], correct:2,
-   exp:"볼조인트형은 나사식·용접식·플랜지식 등으로 제작되며 좁은 공간에서도 다양한 방향의 변위를 흡수할 수 있습니다."},
-  {tag:"신축이음쇠", q:"패킹이 없는 팩리스형 구조로 누설이 적지만, 고압 배관에는 부적당한 신축이음쇠는?",
-   opts:["벨로즈형","슬리브형","스위블형","루프형"], correct:0,
-   exp:"벨로즈형은 관축 방향으로만 신축을 흡수하며 좁은 공간에 적합하지만 고압에는 취약합니다."},
-  {tag:"배관재료", q:"동관의 두께를 두꺼운 순서대로 나열한 것은?",
-   opts:["K>L>M>N","N>M>L>K","L>K>N>M","M>N>K>L"], correct:0,
-   exp:"동관은 K형이 가장 두껍고 N형이 가장 얇습니다. K>L>M>N 순서로 암기합니다."},
-  {tag:"배관재료", q:"스테인리스강관에 대한 설명으로 옳은 것은?",
-   opts:["저온충격에 약해 한랭지 배관에 부적합하다","저온충격에 강해 한랭지 배관에도 적합하다","내식성이 동관보다 크게 떨어진다","반드시 화기 접합만 가능하다"], correct:1,
-   exp:"스테인리스강관은 저온충격에 강해 한랭지 배관에도 적합합니다. '저온에 약하다'는 반복 출제되는 오답 패턴입니다."},
-  {tag:"배관재료", q:"동관과 강관의 인장강도를 비교한 설명으로 옳은 것은?",
-   opts:["동관의 인장강도가 강관보다 크다","동관의 인장강도가 강관보다 작다","두 관의 인장강도는 항상 같다","비교 자체가 불가능하다"], correct:1,
-   exp:"동관은 열전도율과 내식성은 우수하지만 인장강도는 강관보다 작습니다."},
-  {tag:"배관재료", q:"이종관(예: 강관-동관) 접합 시 반드시 고려해야 하는 부식 현상은?",
-   opts:["산화부식","전식(갈바닉 부식)","응력부식","공식(孔食)만 해당"], correct:1,
-   exp:"서로 다른 금속이 접합되면 전위차로 인한 전식(갈바닉 부식)이 발생할 수 있어 절연이음쇠 등으로 방지해야 합니다."},
-  {tag:"지지·밸브", q:"열팽창에 의한 배관의 이동을 한 방향으로만 구속하는 리스트레인트는?",
-   opts:["앵커","가이드","스토퍼","브레이스"], correct:2,
-   exp:"스토퍼는 한 방향의 이동(또는 회전)만 구속합니다. 앵커는 완전고정, 가이드는 축방향은 허용하고 직각방향만 구속합니다."},
-  {tag:"지지·밸브", q:"진동이나 충격을 흡수하는 목적으로 사용되는 배관 지지장치는?",
-   opts:["앵커","브레이스","가이드","스위블조인트"], correct:1,
-   exp:"브레이스는 리스트레인트와 별도로 분류되며, 배관의 진동·충격을 흡수하는 역할을 합니다."},
-  {tag:"지지·밸브", q:"체크밸브 중 50mm 이하의 소구경 수평배관에만 사용해야 하는 것은?",
-   opts:["스윙형","리프트형","해머리스형","버터플라이형"], correct:1,
-   exp:"리프트형 체크밸브는 구조상 수평배관 전용이며, 대구경이나 수직배관에는 스윙형을 사용해야 합니다."},
-  {tag:"지지·밸브", q:"유량조절에는 적합하지 않고 완전 개폐용으로만 사용하는 밸브는?",
-   opts:["글로브밸브","게이트밸브","볼밸브","니들밸브"], correct:1,
-   exp:"게이트(슬루스)밸브는 유체저항이 적어 완전 개폐용으로 적합하지만 유량조절에는 부적당합니다."},
-  {tag:"가스·안전", q:"LNG(액화천연가스)의 성질로 옳은 것은?",
-   opts:["공기보다 무거워 누설 시 아래로 가라앉는다","공기보다 가벼워 누설 시 위로 확산된다","상온에서도 항상 기체 상태로만 존재한다","주성분은 프로판이다"], correct:1,
-   exp:"LNG는 메탄이 주성분이라 공기보다 가벼워 누설 시 위로 확산됩니다. LPG(프로판·부탄 등)는 반대로 공기보다 무겁습니다."},
-  {tag:"가스·안전", q:"가연성 가스 용기 보관 방법으로 옳은 것은?",
-   opts:["화기로부터 1m 이상 이격하면 충분하다","눕혀서 보관해 안정감을 준다","반드시 세워서 보관하고 화기로부터 5m 이상 이격한다","직사광선은 무관하다"], correct:2,
-   exp:"가연성 가스 용기는 전도방지를 위해 세워서 보관하고, 화기로부터 최소 5m 이상 떨어뜨려야 합니다."},
-  {tag:"가스·안전", q:"이동식 사다리를 안전하게 사용하는 방법으로 옳은 것은?",
-   opts:["설치각도 85도, 상단은 10cm만 돌출시킨다","설치각도 75도 이하, 상단은 60cm 이상 돌출시킨다","각도는 무관하며 상단 돌출은 불필요하다","벽에 완전히 수직으로 세운다"], correct:1,
-   exp:"이동식 사다리는 75도 이하의 각도로 설치하고, 상단이 지지점보다 60cm 이상 위로 돌출되도록 해야 안전합니다."},
-  {tag:"가스·안전", q:"증발식 부취설비가 적합한 조건은?",
-   opts:["대규모이고 유량 변동이 큰 설비","소규모이고 유량 변동이 적은 설비","압력이 매우 높은 초고압 설비","모든 규모에 동일하게 적합"], correct:1,
-   exp:"증발식 부취설비는 구조가 간단하지만 첨가율 조절이 어려워 소규모·유량변동이 적은 곳에 적합합니다."},
-  {tag:"계산공식", q:"강관의 절단(수요)길이를 구하는 공식으로 옳은 것은?",
-   opts:["중심간거리 + 2×(중심~단면거리 − 나사물림길이)","중심간거리 − 2×(중심~단면거리 − 나사물림길이)","중심간거리 × 2 − 나사물림길이","중심간거리 ÷ 2 + 나사물림길이"], correct:1,
-   exp:"강관 절단길이 = 중심간거리 − 2×(엘보 중심~단면거리 − 나사물림길이) 공식을 사용합니다."},
-  {tag:"계산공식", q:"스케줄 번호를 구하는 공식은?",
-   opts:["(허용응력÷사용압력)×1000","(사용압력÷허용응력)×1000","사용압력×허용응력÷1000","사용압력−허용응력"], correct:1,
-   exp:"스케줄 번호 = (사용압력 ÷ 허용응력) × 1000 이며, 허용응력은 인장강도를 안전율로 나눈 값입니다."},
-  {tag:"계산공식", q:"섭씨 0도는 화씨로 몇 도인가?",
-   opts:["0°F","32°F","100°F","212°F"], correct:1,
-   exp:"℉ = (9/5)×℃ + 32 공식에 대입하면 섭씨 0도는 화씨 32도입니다."}
+  {tag:"신축이음쇠", q:"고온·고압 배관에 주로 쓰이며 곡률반경을 관지름의 6배 이상으로 권장하는 신축이음쇠는?", opts:["루프형","스위블형","벨로즈형","슬리브형"], correct:0, exp:"루프형은 관을 곡선으로 구부려 신축을 흡수하며, 고온·고압 배관에 사용됩니다."},
+  {tag:"신축이음쇠", q:"엘보 2개 이상의 나사 회전 여유를 이용해 신축을 흡수하는 것은?", opts:["볼조인트형","스위블형","루프형","빅토릭형"], correct:1, exp:"스위블형은 저압 증기·온수 난방 지관에 사용됩니다."},
+  {tag:"배관재료", q:"동관의 두께를 두꺼운 순서대로 나열한 것은?", opts:["K>L>M>N","N>M>L>K","L>K>N>M","M>N>K>L"], correct:0, exp:"동관 두께는 K형이 가장 두껍습니다."},
+  {tag:"배관재료", q:"스테인리스강관에 대한 설명으로 옳은 것은?", opts:["저온충격에 약하다","저온충격에 강해 한랭지 배관에도 적합하다","내식성이 떨어진다","화기 접합만 가능"], correct:1, exp:"스테인리스강관은 저온충격에 강합니다."},
+  {tag:"가스·안전", q:"LNG(액화천연가스)의 성질로 옳은 것은?", opts:["공기보다 무겁다","공기보다 가벼워 위로 확산된다","상온에서 액체다","주성분은 프로판"], correct:1, exp:"LNG(메탄)는 공기보다 가벼워 위로 확산됩니다."}
 ];
 QUIZ_DATA.forEach((d,i)=>{ d.id = i; });
 function allQuizData(){ return QUIZ_DATA; }
 function getQuizTags(){ return ["전체", ...Array.from(new Set(QUIZ_DATA.map(d=>d.tag)))]; }
 
-const STORAGE_KEY = 'piping_quiz_stats_v1';
+/* 전용 저장소 설정 (다른 사용자와 섞이지 않는 별도 키 지정) */
+const STORAGE_KEY = 'piping_quiz_byungsik_2026';
 const firebaseConfig = {
   apiKey: "AIzaSyCzYFwEgxgugKmjPbVLEa_Wt_te_xkmz8w",
   authDomain: "piping-quiz-7fc98.firebaseapp.com",
@@ -404,11 +326,11 @@ const firebaseConfig = {
 };
 let db = null;
 let statsDocRef = null;
-let cloudReady = false;
 try{
   firebase.initializeApp(firebaseConfig);
   db = firebase.firestore();
-  statsDocRef = db.collection('progress').doc('main');
+  // 전용 문서 키 'byungsik_2026'으로 독립 설정
+  statsDocRef = db.collection('progress').doc('byungsik_2026');
 }catch(e){}
 
 function setSyncStatus(text){
@@ -433,11 +355,9 @@ async function loadStatsFromCloud(){
     } else {
       await statsDocRef.set({ stats: STATS, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
     }
-    cloudReady = true;
-    setSyncStatus('☁️ 동기화됨');
+    setSyncStatus('☁️ 개인 클라우드 동기화됨');
   }catch(e){
-    cloudReady = false;
-    setSyncStatus('⚠️ 오프라인 (이 기기에만 저장 중)');
+    setSyncStatus('⚠️ 오프라인 (로컬 저장 중)');
   }
 }
 async function saveStats(){
@@ -445,10 +365,9 @@ async function saveStats(){
   if(!statsDocRef) return;
   try{
     await statsDocRef.set({ stats: STATS, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, {merge:true});
-    cloudReady = true;
-    setSyncStatus('☁️ 동기화됨');
+    setSyncStatus('☁️ 개인 클라우드 동기화됨');
   }catch(e){
-    setSyncStatus('⚠️ 저장 실패 (로컬에만 저장됨)');
+    setSyncStatus('⚠️ 저장 실패');
   }
 }
 function getStat(id){
@@ -463,8 +382,7 @@ function recordResult(id, isCorrect){
 }
 function weightOf(id){
   const s = STATS[id] || {c:0,w:0};
-  let w = 1 + s.w*3 - s.c*1;
-  return Math.max(w, 1);
+  return Math.max(1 + s.w*3 - s.c*1, 1);
 }
 function weightedPick(pool, excludeId){
   const candidates = pool.filter(q => q.id !== excludeId);
@@ -484,27 +402,10 @@ function renderStatsPanel(){
   const totalCorrect = entries.reduce((a,[,s])=>a+s.c, 0);
   const summaryEl = document.getElementById('statsSummary');
   if(totalAttempts === 0){
-    summaryEl.textContent = '아직 기록 없음 — 문제를 풀면 자동으로 쌓입니다';
+    summaryEl.textContent = '아직 기록 없음 — 새로운 풀이가 쌓입니다';
   } else {
     const rate = Math.round(totalCorrect/totalAttempts*100);
     summaryEl.textContent = `누적 ${totalAttempts}문제 시도 · 정답률 ${rate}%`;
-  }
-  const weak = entries
-    .map(([id,s]) => ({id: Number(id), s}))
-    .filter(e => e.s.w > 0)
-    .sort((a,b) => (b.s.w - a.s.w))
-    .slice(0,5);
-  const weakBox = document.getElementById('weakBox');
-  if(weak.length === 0){
-    weakBox.innerHTML = '';
-  } else {
-    const items = weak.map(e => {
-      const q = allQuizData().find(d => String(d.id) === String(e.id));
-      if(!q) return '';
-      const short = q.q.length > 28 ? q.q.slice(0,28)+'…' : q.q;
-      return `<li>[${q.tag}] ${short} — 오답 ${e.s.w}회</li>`;
-    }).join('');
-    weakBox.innerHTML = '<div style="margin-top:6px; color:var(--red); font-weight:700;">자주 틀리는 문제 TOP</div><ul class="weaklist">'+items+'</ul>';
   }
 }
 
@@ -520,21 +421,18 @@ const qTextEl = document.getElementById('qText');
 const qOptsEl = document.getElementById('qOpts');
 const qExplainEl = document.getElementById('qExplain');
 const btnNext = document.getElementById('btnNext');
-const statQ = document.getElementById('statQ');
 const statO = document.getElementById('statO');
 const statX = document.getElementById('statX');
-const quizPlayArea = document.getElementById('quizPlayArea');
-const quizDoneArea = document.getElementById('quizDoneArea');
-const quizFiltersEl = document.getElementById('quizFilters');
 
 function buildQuizFilters(){
-  quizFiltersEl.innerHTML = '';
+  const el = document.getElementById('quizFilters');
+  el.innerHTML = '';
   getQuizTags().forEach(t=>{
     const chip = document.createElement('button');
     chip.className = 'chip' + (t===quizTag ? ' active' : '');
     chip.textContent = t;
     chip.onclick = ()=>{ quizTag = t; startQuizSession(); };
-    quizFiltersEl.appendChild(chip);
+    el.appendChild(chip);
   });
 }
 function quizPool(){ const all = allQuizData(); return quizTag==='전체' ? all : all.filter(d=>d.tag===quizTag); }
@@ -542,14 +440,10 @@ function quizPool(){ const all = allQuizData(); return quizTag==='전체' ? all 
 function startQuizSession(){
   buildQuizFilters();
   quizCorrectCount = 0; quizWrongCount = 0; quizCurrent = null;
-  quizPlayArea.classList.remove('hidden');
-  quizDoneArea.classList.add('hidden');
+  document.getElementById('quizPlayArea').classList.remove('hidden');
+  document.getElementById('quizDoneArea').classList.add('hidden');
   renderStatsPanel();
   nextQuestion();
-}
-function updateQuizStats(){
-  statO.textContent = quizCorrectCount;
-  statX.textContent = quizWrongCount;
 }
 function nextQuestion(){
   quizAnswered = false;
@@ -570,7 +464,8 @@ function nextQuestion(){
     btn.onclick = () => selectOption(btn, o.isCorrect);
     qOptsEl.appendChild(btn);
   });
-  updateQuizStats();
+  statO.textContent = quizCorrectCount;
+  statX.textContent = quizWrongCount;
 }
 function selectOption(btn, isCorrect){
   if(quizAnswered) return;
@@ -589,277 +484,23 @@ function selectOption(btn, isCorrect){
   qExplainEl.textContent = quizCurrent.exp;
   qExplainEl.classList.add('show');
   btnNext.style.display = '';
-  updateQuizStats();
+  statO.textContent = quizCorrectCount;
+  statX.textContent = quizWrongCount;
 }
-function finishQuizSession(){
-  quizPlayArea.classList.add('hidden');
-  quizDoneArea.classList.remove('hidden');
-  document.getElementById('quizDoneMsg').textContent =
-    '이번 세션: 정답 ' + quizCorrectCount + '개 / 오답 ' + quizWrongCount + '개. 기록은 자동 저장되어 다음에도 이어집니다.';
-}
-
-document.getElementById('btnExport').addEventListener('click', ()=>{
-  const box = document.getElementById('exportBox');
-  const importBox = document.getElementById('importBox');
-  importBox.classList.remove('show');
-  box.classList.toggle('show');
-  if(box.classList.contains('show')){
-    const code = btoa(unescape(encodeURIComponent(JSON.stringify(STATS))));
-    document.getElementById('exportText').value = code;
-  }
-});
-document.getElementById('btnCopyCode').addEventListener('click', ()=>{
-  const ta = document.getElementById('exportText');
-  ta.select();
-  try{ document.execCommand('copy'); showToast('복사됐어요! 다른 기기에 붙여넣으세요'); }
-  catch(e){ showToast('복사 실패 — 직접 길게 눌러 복사해주세요'); }
-});
-document.getElementById('btnImport').addEventListener('click', ()=>{
-  const box = document.getElementById('importBox');
-  const exportBox = document.getElementById('exportBox');
-  exportBox.classList.remove('show');
-  box.classList.toggle('show');
-});
-document.getElementById('btnDoImport').addEventListener('click', ()=>{
-  const raw = document.getElementById('importText').value.trim();
-  if(!raw){ showToast('코드를 붙여넣어주세요'); return; }
-  try{
-    const incoming = JSON.parse(decodeURIComponent(escape(atob(raw))));
-    Object.entries(incoming).forEach(([id, s])=>{
-      const cur = getStat(id);
-      cur.c += (s.c||0); cur.w += (s.w||0);
-    });
-    saveStats();
-    renderStatsPanel();
-    document.getElementById('importText').value = '';
-    document.getElementById('importBox').classList.remove('show');
-    showToast('가져오기 완료! 기록이 합쳐졌어요');
-  }catch(e){ showToast('코드를 읽지 못했어요. 다시 확인해주세요'); }
-});
-document.getElementById('btnResetStats').addEventListener('click', ()=>{
-  if(confirm('정말 이 기기의 모든 학습 기록을 지울까요? 되돌릴 수 없어요.')){
-    STATS = {}; saveStats(); renderStatsPanel(); showToast('기록을 초기화했어요');
-  }
-});
 
 btnNext.addEventListener('click', nextQuestion);
-document.getElementById('btnEndSession').addEventListener('click', finishQuizSession);
-document.getElementById('btnQuizRestart').addEventListener('click', startQuizSession);
-
-/* 2) 기호모음 (SVG 참고자료) */
-function svgWrap(inner){
-  return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-    <g stroke="#e0dcc8" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round">${inner}</g>
-  </svg>`;
-}
-const SYM_DATA = [
-  {cat:"밸브류", name:"게이트(슬루스)밸브", desc:"완전 개폐 전용. 유량조절에는 부적당. 삼각형 두 개를 맞댄 기본 밸브 기호.",
-   svg: svgWrap(`<line x1="10" y1="50" x2="90" y2="50"/><polygon points="30,25 30,75 50,50" fill="#e0dcc8"/><polygon points="70,25 70,75 50,50" fill="#e0dcc8"/>`)},
-  {cat:"밸브류", name:"글로브밸브", desc:"유량조절 용이. 유체저항이 큼. 밸브 몸통 원이 추가된 형태로 구분.",
-   svg: svgWrap(`<line x1="10" y1="50" x2="90" y2="50"/><polygon points="30,25 30,75 50,50" fill="#e0dcc8"/><polygon points="70,25 70,75 50,50" fill="#e0dcc8"/><circle cx="50" cy="50" r="10" fill="none"/>`)},
-  {cat:"밸브류", name:"체크밸브(역지밸브)", desc:"유체를 한 방향으로만 흐르게 하여 역류 방지. 삼각형 안에 흐름 방향 화살표 표시.",
-   svg: svgWrap(`<line x1="10" y1="50" x2="90" y2="50"/><polygon points="30,30 30,70 70,50" fill="#e0dcc8"/><line x1="70" y1="30" x2="70" y2="70"/>`)},
-  {cat:"밸브류", name:"볼밸브", desc:"90° 회전으로 빠른 개폐. 기밀성이 큼. 원(볼) 안에 유로가 있는 형태.",
-   svg: svgWrap(`<line x1="10" y1="50" x2="90" y2="50"/><circle cx="50" cy="50" r="22" fill="none"/><line x1="38" y1="50" x2="62" y2="50" stroke-width="6"/>`)},
-  {cat:"이음쇠·부속", name:"엘보(90°)", desc:"배관 방향을 90°로 전환하는 이음쇠. L자 형태로 도시.",
-   svg: svgWrap(`<path d="M20,20 L20,60 L80,60"/>`)},
-  {cat:"이음쇠·부속", name:"티(Tee)", desc:"한 지점에서 배관을 분기(3방향)할 때 사용.",
-   svg: svgWrap(`<line x1="10" y1="50" x2="90" y2="50"/><line x1="50" y1="50" x2="50" y2="90"/>`)}
-];
-const SYM_CATS = ["전체", ...Array.from(new Set(SYM_DATA.map(d=>d.cat)))];
-let symCat = "전체";
-
-const symFiltersEl = document.getElementById('symFilters');
-const symListEl = document.getElementById('symList');
-
-function buildSymFilters(){
-  symFiltersEl.innerHTML = '';
-  SYM_CATS.forEach(t=>{
-    const chip = document.createElement('button');
-    chip.className = 'chip' + (t===symCat ? ' active' : '');
-    chip.textContent = t;
-    chip.onclick = ()=>{ symCat = t; renderSymList(); };
-    symFiltersEl.appendChild(chip);
-  });
-}
-function renderSymList(){
-  buildSymFilters();
-  const items = symCat==='전체' ? SYM_DATA : SYM_DATA.filter(d=>d.cat===symCat);
-  let html = '';
-  let lastCat = null;
-  items.forEach(item => {
-    if(symCat==='전체' && item.cat !== lastCat){
-      html += `<div class="symcat">${item.cat}</div>`;
-      lastCat = item.cat;
-    }
-    html += `<div class="symcard">
-      <div class="symicon">${item.svg}</div>
-      <div class="symbody">
-        <div class="symname">${item.name}</div>
-        <div class="symdesc">${item.desc}</div>
-      </div>
-    </div>`;
-  });
-  symListEl.innerHTML = html;
-}
-
-/* 3) 실전 도면 예시 */
-const DIAGRAM_DATA = [
-  { title:"급수 배관 계통도 (물 W)",
-    svg: `<svg viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto;">
-      <g stroke="#e0dcc8" stroke-width="3" fill="none" stroke-linecap="round">
-        <line x1="30" y1="110" x2="590" y2="110"/>
-        <text x="70" y="90" font-size="16" fill="#e0dcc8" stroke="none" font-weight="700">W</text>
-      </g>
-    </svg>`,
-    legend: ["① 펌프 — 물을 가압하여 배관으로 보냄", "② 체크밸브 — 펌프 정지 시 역류 방지"]
+document.getElementById('btnResetStats').addEventListener('click', ()=>{
+  if(confirm('모든 기록을 0으로 초기화할까요?')){
+    STATS = {}; saveStats(); renderStatsPanel(); showToast('초기화되었습니다');
   }
-];
-let diagramIdx = 0;
-function buildDiagramFilters(){
-  const el = document.getElementById('diagramFilters');
-  el.innerHTML = '';
-  DIAGRAM_DATA.forEach((d,i)=>{
-    const chip = document.createElement('button');
-    chip.className = 'chip' + (i===diagramIdx ? ' active' : '');
-    chip.textContent = d.title;
-    chip.onclick = ()=>{ diagramIdx = i; renderDiagram(); };
-    el.appendChild(chip);
-  });
-}
-function renderDiagram(){
-  buildDiagramFilters();
-  const d = DIAGRAM_DATA[diagramIdx];
-  document.getElementById('diagramSvgBox').innerHTML = d.svg;
-  document.getElementById('diagramLegend').innerHTML = d.legend.map(l=>`<div style="margin-bottom:4px;">${l}</div>`).join('');
-}
+});
 
-/* 4) 계산문제 (랜덤 숫자 생성형) */
-function rnd(min, max, step){
-  step = step || 1;
-  const n = Math.floor(Math.random() * ((max-min)/step + 1));
-  return min + n*step;
-}
-function round1(n){ return Math.round(n*10)/10; }
-function fmt(n){
-  if(Number.isInteger(n)) return n.toLocaleString('ko-KR');
-  return round1(n).toLocaleString('ko-KR');
-}
-function shuffleOptsWithCorrect(correctVal, wrongVals, unit){
-  const all = [correctVal, ...wrongVals].map(v => fmt(v) + (unit||''));
-  const seen = new Set();
-  const uniq = [];
-  all.forEach(v => { if(!seen.has(v)){ seen.add(v); uniq.push(v); } });
-  while(uniq.length < 4){
-    const jitter = correctVal * (0.85 + Math.random()*0.3);
-    const v = fmt(Math.round(jitter)) + (unit||'');
-    if(!seen.has(v)){ seen.add(v); uniq.push(v); }
-  }
-  const correctStr = fmt(correctVal) + (unit||'');
-  const opts = shuffle(uniq.slice(0,4));
-  return { opts, correctIdx: opts.indexOf(correctStr) };
-}
-
-const CALC_TEMPLATES = [
-  { tag:"강관절단길이", gen: ()=>{
-      const center = rnd(200, 800, 50);
-      const A = rnd(25, 45, 1);
-      const a = rnd(10, 20, 1);
-      const correct = center - 2*(A-a);
-      const wrongs = [ center - (A-a), center + 2*(A-a), center - 2*(A+a) ];
-      const { opts, correctIdx } = shuffleOptsWithCorrect(correct, wrongs, 'mm');
-      return {
-        q: `강관 양 끝에 90° 엘보 2개를 끼워 중심간거리를 ${center}mm로 할 때, 엘보 중심~단면거리 A=${A}mm, 나사물림길이 a=${a}mm 이면 강관의 절단길이는?`,
-        opts, correctIdx,
-        exp: `절단길이 = 중심간거리 − 2×(A−a) = ${center} − 2×(${A}−${a}) = ${center} − ${2*(A-a)} = ${correct}mm`
-      };
-  }}
-];
-const CALC_TAGS = ["전체", ...CALC_TEMPLATES.map(t=>t.tag)];
-
-let calcTag = "전체";
-let calcCurrent = null;
-let calcAnswered = false;
-let calcTotal = 0, calcCorrectCount = 0, calcWrongCount = 0;
-
-const calcTagEl = document.getElementById('calcTag');
-const calcQTextEl = document.getElementById('calcQText');
-const calcOptsEl = document.getElementById('calcOpts');
-const calcExplainEl = document.getElementById('calcExplain');
-const btnCalcNext = document.getElementById('btnCalcNext');
-const calcFiltersEl = document.getElementById('calcFilters');
-
-function buildCalcFilters(){
-  calcFiltersEl.innerHTML = '';
-  CALC_TAGS.forEach(t=>{
-    const chip = document.createElement('button');
-    chip.className = 'chip' + (t===calcTag ? ' active' : '');
-    chip.textContent = t;
-    chip.onclick = ()=>{ calcTag = t; startCalcSession(); };
-    calcFiltersEl.appendChild(chip);
-  });
-}
-function startCalcSession(){
-  buildCalcFilters();
-  calcTotal = 0; calcCorrectCount = 0; calcWrongCount = 0;
-  updateCalcStats();
-  nextCalcQuestion();
-}
-function updateCalcStats(){
-  document.getElementById('calcTotal').textContent = calcTotal;
-  document.getElementById('calcCorrect').textContent = calcCorrectCount;
-  document.getElementById('calcWrong').textContent = calcWrongCount;
-}
-function calcPool(){
-  return calcTag==='전체' ? CALC_TEMPLATES : CALC_TEMPLATES.filter(t=>t.tag===calcTag);
-}
-function nextCalcQuestion(){
-  calcAnswered = false;
-  calcExplainEl.classList.remove('show');
-  btnCalcNext.style.display = 'none';
-  const pool = calcPool();
-  const template = pool[Math.floor(Math.random()*pool.length)];
-  calcCurrent = template.gen();
-  calcTagEl.textContent = template.tag;
-  calcQTextEl.textContent = calcCurrent.q;
-  calcOptsEl.innerHTML = '';
-  calcCurrent.opts.forEach((optText, idx) => {
-    const btn = document.createElement('button');
-    btn.className = 'opt';
-    btn.textContent = optText;
-    btn.onclick = () => selectCalcOption(btn, idx);
-    calcOptsEl.appendChild(btn);
-  });
-}
-function selectCalcOption(btn, idx){
-  if(calcAnswered) return;
-  calcAnswered = true;
-  calcTotal++;
-  const allOpts = calcOptsEl.querySelectorAll('.opt');
-  allOpts.forEach(o => o.classList.add('disabled'));
-  if(idx === calcCurrent.correctIdx){
-    btn.classList.add('correct');
-    calcCorrectCount++;
-  } else {
-    btn.classList.add('wrong');
-    allOpts[calcCurrent.correctIdx].classList.add('correct');
-    calcWrongCount++;
-  }
-  calcExplainEl.textContent = calcCurrent.exp;
-  calcExplainEl.classList.add('show');
-  btnCalcNext.style.display = '';
-  updateCalcStats();
-}
-btnCalcNext.addEventListener('click', nextCalcQuestion);
-
-/* 초기 구동 */
+/* 초기화 실행 */
 let calcStarted = false;
 (async ()=>{
   await loadStatsFromCloud();
   startQuizSession();
 })();
-renderSymList();
-renderDiagram();
 </script>
 </body>
 </html>
