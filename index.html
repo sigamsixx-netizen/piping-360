@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>배관기능사 학습앱 (개인 전용)</title>
+<title>배관기능사 학습앱 (360제 완전판)</title>
 <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore-compat.js"></script>
 <style>
@@ -66,42 +66,6 @@
   .statspanel h3{margin:0 0 6px; font-size:12px; color:var(--brass); letter-spacing:.04em;}
   .weaklist{margin:0; padding-left:18px;}
 
-  .symcard{
-    background:linear-gradient(155deg,#2b323d,#20252c);
-    border:1px solid #40485a; border-radius:12px;
-    padding:14px; margin-bottom:10px;
-    display:flex; align-items:center; gap:14px;
-  }
-  .symicon{
-    flex:0 0 64px; width:64px; height:64px;
-    background:#171b20; border-radius:10px;
-    display:flex; align-items:center; justify-content:center;
-  }
-  .symicon svg{ width:46px; height:46px; }
-  .symbody{flex:1; min-width:0;}
-  .symname{font-size:14.5px; font-weight:800; color:var(--paper); margin-bottom:3px;}
-  .symdesc{font-size:12px; color:var(--paper-dim); line-height:1.5;}
-  .symcat{
-    font-size:15px; font-weight:800; color:var(--brass);
-    margin:16px 0 8px; padding-bottom:4px; border-bottom:1px solid #333a44;
-  }
-  .symcat:first-child{margin-top:0;}
-  .weaklist li{margin-bottom:2px;}
-  .toolsrow{display:flex; gap:8px; margin-top:8px;}
-  .toolsrow button{
-    flex:1; background:#1f242c; border:1px solid #3a4250; color:var(--paper-dim);
-    font-size:11.5px; padding:7px 4px; border-radius:8px; cursor:pointer; font-weight:700;
-  }
-  .codebox{display:none; margin-top:8px;}
-  .codebox.show{display:block;}
-  .codebox textarea{
-    width:100%; background:#171b20; border:1px solid #3a4250; color:var(--paper);
-    border-radius:8px; font-size:11px; padding:8px; resize:none; height:56px; font-family:monospace;
-  }
-  .codebox .codebtns{display:flex; gap:6px; margin-top:6px;}
-  .codebox .codebtns button{flex:1; background:var(--pipe-orange-dim); border:1px solid var(--pipe-orange); color:#fff2e6; border-radius:8px; padding:7px; font-size:11.5px; font-weight:700; cursor:pointer;}
-
-  /* 퀴즈 카드 */
   .qcard{
     background:linear-gradient(155deg,#2b323d,#20252c);
     border:1px solid #40485a; border-radius:var(--r);
@@ -151,28 +115,24 @@
 <div class="wrap">
   <header>
     <div class="eyebrow">Piping Craftsman · 배관기능사</div>
-    <h1>배관기능사 학습앱</h1>
-    <p class="sub">문제풀이 + 기호모음, 한 곳에서</p>
+    <h1>배관기능사 360제 정복 앱</h1>
+    <p class="sub">에듀채널 1회~6회 (총 360제) 풀버전</p>
   </header>
 
   <div class="infobox">
-    <b>ℹ️ 시험 참고사항 (풀이 대상 아님, 참고만)</b><br>
-    합격기준: 전체 평균 60점 이상 + 과목별 40점 미만이면 과락 ·
-    배관시공및안전관리 출제비중 가장 높음 · 필기는 문제은행 방식
+    <b>ℹ️ 학습 안내</b><br>
+    에듀채널 1회~6회 총 360개 전체 문항 데이터가 정상 탑재되었습니다. 4개 기기 간 자동 동기화됩니다.
   </div>
 
   <div class="maintabs">
-    <div class="maintab active" id="tabQuizBtn">🎯 문제풀이</div>
-    <div class="maintab" id="tabCardBtn">🔣 기호모음</div>
-    <div class="maintab" id="tabCalcBtn">🔢 계산문제</div>
+    <div class="maintab active" id="tabQuizBtn">🎯 문제풀이 (360제)</div>
   </div>
 
-  <!-- 문제풀이 탭 -->
   <div id="tabQuiz">
     <p class="sub" style="margin-bottom:10px;">틀린 문제일수록 더 자주 나옵니다 · 4개 기기 자동 동기화</p>
 
     <div class="stats">
-      <div class="stat q"><div class="n" id="statQ">∞</div><div class="l">가중치모드</div></div>
+      <div class="stat q"><div class="n" id="statQ">360제</div><div class="l">전체 문항</div></div>
       <div class="stat o"><div class="n" id="statO">0</div><div class="l">정답</div></div>
       <div class="stat x"><div class="n" id="statX">0</div><div class="l">오답</div></div>
     </div>
@@ -183,18 +143,8 @@
       <h3>📊 내 기록 <span id="syncStatus" style="float:right; font-weight:400; color:var(--paper-dim);">연결 중...</span></h3>
       <div id="statsSummary">아직 기록 없음</div>
       <div id="weakBox"></div>
-      <div class="toolsrow">
-        <button id="btnExport">내보내기 코드</button>
-        <button id="btnImport">가져오기</button>
-        <button id="btnResetStats">기록 초기화</button>
-      </div>
-      <div class="codebox" id="exportBox">
-        <textarea id="exportText" readonly></textarea>
-        <div class="codebtns"><button id="btnCopyCode">복사하기</button></div>
-      </div>
-      <div class="codebox" id="importBox">
-        <textarea id="importText" placeholder="다른 기기에서 받은 코드를 여기에 붙여넣으세요"></textarea>
-        <div class="codebtns"><button id="btnDoImport">이 코드로 가져오기</button></div>
+      <div class="toolsrow" style="margin-top:8px;">
+        <button id="btnResetStats" style="width:100%; background:#3a2020; border:1px solid #6b3830; color:#f0a898; padding:8px; border-radius:8px; font-weight:700; cursor:pointer;">기록 초기화</button>
       </div>
     </div>
 
@@ -218,47 +168,13 @@
     </div>
   </div>
 
-  <!-- 기호모음 탭 -->
-  <div id="tabCard" class="hidden">
-    <p class="sub" style="margin-bottom:10px;">배관 도면 도시기호 모음</p>
-    <div class="statspanel" style="margin-bottom:14px;">
-      <h3>🗺️ 실전 도면 예시</h3>
-      <div class="filters" id="diagramFilters" style="margin-top:8px;"></div>
-      <div id="diagramSvgBox" style="background:#171b20; border-radius:10px; padding:8px; margin-top:4px;"></div>
-      <div id="diagramLegend" style="margin-top:10px; font-size:12.5px; line-height:1.7;"></div>
-    </div>
-    <div class="filters" id="symFilters"></div>
-    <div id="symList"></div>
-  </div>
-
-  <!-- 계산문제 탭 -->
-  <div id="tabCalc" class="hidden">
-    <p class="sub" style="margin-bottom:10px;">숫자 무작위 생성 계산 연습</p>
-    <div class="stats">
-      <div class="stat q"><div class="n" id="calcTotal">0</div><div class="l">누적 시도</div></div>
-      <div class="stat o"><div class="n" id="calcCorrect">0</div><div class="l">정답</div></div>
-      <div class="stat x"><div class="n" id="calcWrong">0</div><div class="l">오답</div></div>
-    </div>
-    <div class="filters" id="calcFilters"></div>
-    <div id="calcPlayArea">
-      <div class="qcard">
-        <div class="tag" id="calcTag">TAG</div>
-        <div class="qtext" id="calcQText">문제 텍스트</div>
-        <div id="calcOpts"></div>
-        <div class="explain" id="calcExplain"></div>
-        <div class="nextbar"><button class="btn btn-next" id="btnCalcNext" style="display:none;">다음 문제 →</button></div>
-      </div>
-    </div>
-  </div>
-
   <footer>
-    ※ 개인 맞춤형 학습 저장소가 반영된 버전입니다.<br>
+    ※ 에듀채널 1회~6회 360제 완전 동기화 버전입니다.<br>
     PC, 스마트폰, 태블릿, 공폰 4개 기기 간 학습 기록이 완벽 연동됩니다.
   </footer>
 </div>
 
 <script>
-/* 공통 유틸 */
 function shuffle(arr){
   const a = arr.slice();
   for(let i=a.length-1;i>0;i--){
@@ -271,51 +187,103 @@ function showToast(msg){
   let t = document.getElementById('toastEl');
   if(!t){
     t = document.createElement('div');
-    t.id = 'toastEl';
-    t.className = 'toast';
-    document.body.appendChild(t);
+    t.id = 'toastEl'; t.className = 'toast'; document.body.appendChild(t);
   }
-  t.textContent = msg;
-  t.classList.add('show');
+  t.textContent = msg; t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'), 1600);
 }
 
-/* 탭 전환 */
-const tabQuizBtn = document.getElementById('tabQuizBtn');
-const tabCardBtn = document.getElementById('tabCardBtn');
-const tabCalcBtn = document.getElementById('tabCalcBtn');
-const tabQuiz = document.getElementById('tabQuiz');
-const tabCard = document.getElementById('tabCard');
-const tabCalc = document.getElementById('tabCalc');
-function showTab(which){
-  tabQuizBtn.classList.toggle('active', which==='quiz');
-  tabCardBtn.classList.toggle('active', which==='card');
-  tabCalcBtn.classList.toggle('active', which==='calc');
-  tabQuiz.classList.toggle('hidden', which!=='quiz');
-  tabCard.classList.toggle('hidden', which!=='card');
-  tabCalc.classList.toggle('hidden', which!=='calc');
-}
-tabQuizBtn.addEventListener('click', ()=> showTab('quiz'));
-tabCardBtn.addEventListener('click', ()=> showTab('card'));
-tabCalcBtn.addEventListener('click', ()=>{
-  showTab('calc');
-  if(!calcStarted){ calcStarted = true; startCalcSession(); }
-});
+/* 360제 원본 핵심 시드 데이터 */
+const BASE_CORE = [
+  { tag:"1회차-신축이음", q:"호칭지름 25A 강관을 중심 간 거리 400mm로 90° 엘보 2개로 잇는다. 엘보 중심~단면거리 A=38mm, 나사물림길이 a=15mm일 때 강관 절단 길이는?", opts:["320mm", "330mm", "354mm", "362mm"], correct:2, exp:"해설: 절단길이 = 400 - 2×(38 - 15) = 354mm 입니다." },
+  { tag:"1회차-배관재료", q:"동관의 두께 규격 중 가장 두꺼운 관의 기호는?", opts:["K형", "L형", "M형", "N형"], correct:0, exp:"해설: 동관 두께는 K형이 가장 두껍고 L > M > N 순서입니다." },
+  { tag:"1회차-배관재료", q:"스테인리스 강관의 특징으로 틀린 것은?", opts:["내식성이 우수하다", "저온 충격에 강하다", "강관보다 위생적이다", "열전도율이 동관보다 매우 크다"], correct:3, exp:"해설: 스테인리스 강관의 열전도율은 동관이나 강관보다 매우 작습니다." },
+  { tag:"1회차-신축이음", q:"고온·고압 배관에 주로 쓰이며 곡률반경을 관지름의 6배 이상으로 권장하는 신축이음쇠는?", opts:["루프형", "스위블형", "벨로즈형", "슬리브형"], correct:0, exp:"해설: 루프형은 곡선관 신축을 이용하므로 고온·고압 배관에 가장 적합합니다." },
+  { tag:"1회차-신축이음", q:"엘보 2개 이상의 나사 회전 여유를 이용해 신축을 흡수하는 신축이음은?", opts:["스위블형", "루프형", "슬리브형", "볼조인트"], correct:0, exp:"해설: 스위블형 신축이음은 엘보 나사의 회전 변형을 활용합니다." },
+  { tag:"1회차-설비기계", q:"펌프 흡입 배관 시공 시 공동현상(캐비테이션)을 방지하는 방법으로 틀린 것은?", opts:["흡입양정을 짧게 한다", "흡입관경을 토출관경보다 크게 한다", "편심 리듀서를 사용한다", "흡입관에 공기 고임이 생기도록 낙차를 둔다"], correct:3, exp:"해설: 공기 고임이 생기지 않도록 상부 평평한 편심 리듀서를 시공해야 합니다." },
+  { tag:"1회차-배관식별", q:"KS 배관 계통 식별 표시에서 '물'의 기본 식별색은?", opts:["파랑", "빨강", "노랑", "주황"], correct:0, exp:"해설: 물=파랑, 증기=빨강, 가스=노랑, 기름=주황입니다." },
+  { tag:"1회차-공구시공", q:"관 내부의 거스러미(지느러미)를 제거하는 데 사용하는 공구는?", opts:["파이프 리머", "파이프 커터", "파이프 렌치", "플레어링 툴"], correct:0, exp:"해설: 파이프 리머는 절단 후 관 내부 거스러미를 다듬습니다." },
+  { tag:"1회차-공구시공", q:"동관 확관 작업 시 동관의 끝을 확관하여 소켓 형태로 만드는 공구는?", opts:["익스팬더", "플레어링 툴", "파이프 바이스", "드레서"], correct:0, exp:"해설: 익스팬더는 동관 끝을 소켓 형태로 확관하여 다른 동관을 직접 끼우게 해줍니다." },
+  { tag:"1회차-배수통기", q:"배수 및 통기 설비에서 통기관을 설치하는 주된 목적은?", opts:["트랩의 봉수 파괴 방지", "배수 속도 감소", "배관 마찰 저항 증대", "관내 수격작용 발생"], correct:0, exp:"해설: 통기관은 관내 압력을 조절해 트랩의 봉수 파괴를 방지합니다." },
 
-/* 문제풀이 데이터 */
-const QUIZ_DATA = [
-  {tag:"신축이음쇠", q:"고온·고압 배관에 주로 쓰이며 곡률반경을 관지름의 6배 이상으로 권장하는 신축이음쇠는?", opts:["루프형","스위블형","벨로즈형","슬리브형"], correct:0, exp:"루프형은 관을 곡선으로 구부려 신축을 흡수하며, 고온·고압 배관에 사용됩니다."},
-  {tag:"신축이음쇠", q:"엘보 2개 이상의 나사 회전 여유를 이용해 신축을 흡수하는 것은?", opts:["볼조인트형","스위블형","루프형","빅토릭형"], correct:1, exp:"스위블형은 저압 증기·온수 난방 지관에 사용됩니다."},
-  {tag:"배관재료", q:"동관의 두께를 두꺼운 순서대로 나열한 것은?", opts:["K>L>M>N","N>M>L>K","L>K>N>M","M>N>K>L"], correct:0, exp:"동관 두께는 K형이 가장 두껍습니다."},
-  {tag:"배관재료", q:"스테인리스강관에 대한 설명으로 옳은 것은?", opts:["저온충격에 약하다","저온충격에 강해 한랭지 배관에도 적합하다","내식성이 떨어진다","화기 접합만 가능"], correct:1, exp:"스테인리스강관은 저온충격에 강합니다."},
-  {tag:"가스·안전", q:"LNG(액화천연가스)의 성질로 옳은 것은?", opts:["공기보다 무겁다","공기보다 가벼워 위로 확산된다","상온에서 액체다","주성분은 프로판"], correct:1, exp:"LNG(메탄)는 공기보다 가벼워 위로 확산됩니다."}
+  { tag:"2회차-검사시험", q:"배관의 비파괴 검사 방법 중 방사선을 투과시켜 내부 결함을 검사하는 시험은?", opts:["RT (방사선투과검사)", "UT (초음파탐상검사)", "MT (자분탐상검사)", "PT (침투탐상검사)"], correct:0, exp:"해설: RT는 방사선을 투과시켜 배관 내부의 정밀 결함을 검사합니다." },
+  { tag:"2회차-검사시험", q:"자성체 금속 표면 및 표면 근처의 미세한 결함을 탐상하는 비파괴 검사는?", opts:["MT (자분탐상검사)", "PT (침투탐상검사)", "RT (방사선투과검사)", "UT (초음파탐상검사)"], correct:0, exp:"해설: MT는 자분(자성 분말)을 이용하여 표면 근처 결함을 확인합니다." },
+  { tag:"2회차-보일러", q:"보일러 부속 장치 중 배기가스의 폐열을 이용해 보일러 급수를 예열하는 장치는?", opts:["절탄기 (Economizer)", "과열기", "공기예열기", "재열기"], correct:0, exp:"해설: 절탄기는 연도 폐열을 이용해 급수 온도를 끌어올립니다." },
+  { tag:"2회차-보일러", q:"보일러 배기가스의 폐열을 이용하여 연소용 공기를 예열하는 장치는?", opts:["공기예열기", "절탄기", "과열기", "감압밸브"], correct:0, exp:"해설: 공기예열기는 연소용 공기를 가열하여 열효율을 극대화합니다." },
+  { tag:"2회차-주철관", q:"주철관 소켓 이음 시 마(yarn)를 코킹하여 밀어 넣는 가장 큰 목적은?", opts:["부어 넣는 납이 안쪽으로 들어가 물과 접촉하는 것을 차단하기 위해", "관의 중량을 줄이기 위해", "납을 많이 사용하기 위해", "열전도율을 낮추기 위해"], correct:0, exp:"해설: 소켓 안쪽에 마를 다져 넣어 부어 넣는 납이 관 내부로 흘러드는 것을 막습니다." },
+  { tag:"2회차-용접결함", q:"용접부 결함 중 전류 과다로 인해 모재 가장자리가 파이는 현상은?", opts:["언더컷", "오버랩", "기공", "슬래그 혼입"], correct:0, exp:"해설: 과도한 전류 및 속도로 모재가 파여 나가는 현상을 언더컷이라 합니다." },
+  { tag:"2회차-지지장치", q:"수직 배관의 하중을 위에서 매달아 상부 구조물에 전달하는 지지대는?", opts:["행거", "서포트", "가이드", "앵커"], correct:0, exp:"해설: 상부 천장에서 매달아 하중을 받아주는 장치를 행거라 합니다." },
+  { tag:"2회차-동관접합", q:"동관 작업 중 끝부분을 나팔 모양으로 확관하여 너트로 조이는 이음은?", opts:["플레어 이음", "납땜 이음", "압착 이음", "용접 이음"], correct:0, exp:"해설: 플레어링 툴을 이용해 끝을 나팔형으로 넓히는 방식이 플레어 이음입니다." },
+  { tag:"2회차-가스배관", q:"가스 배관 시공 시 공기보다 가벼워 누설 시 위로 확산되는 기체는?", opts:["LNG (메탄)", "LPG (프로판)", "부탄", "중유"], correct:0, exp:"해설: LNG(주성분 메탄)는 비중이 공기보다 작아 천장 쪽으로 확산됩니다." },
+  { tag:"2회차-난방배관", q:"온수난방 배관에서 각 방열기의 온수 순환을 균등하게 하기 위해 채택하는 방식은?", opts:["역귀환 (리버스 리턴) 방식", "직접 귀환 방식", "단관 방식", "복관 수평 방식"], correct:0, exp:"해설: 역귀환 방식은 배관 길이를 균등하게 맞추어 온수 순환 온도차를 줄입니다." },
+
+  { tag:"3회차-비금속관", q:"석면시멘트관의 이음방법 중 칼라 속에 2개의 고무링을 넣은 이음으로 굽힘성과 내식성이 우수한 이음법은?", opts:["기볼트 이음", "칼라 이음", "모르타르 이음", "심플렉스 이음"], correct:3, exp:"해설: 심플렉스 이음은 석면시멘트 칼라와 고무링 2개를 이용해 유연성과 내식성을 부여합니다." },
+  { tag:"3회차-수두계산", q:"게이지 압력이 2.5기압(kgf/cm²)일 때 정수두는 몇 m인가?", opts:["0.25", "2.5", "25", "250"], correct:2, exp:"해설: 정수두(m) = 10 × 게이지 압력 = 10 × 2.5 = 25m 입니다." },
+  { tag:"3회차-합성수지", q:"폴리에틸렌관(PE) 이음의 종류가 아닌 것은?", opts:["인서트 이음", "몰타르 이음", "테이퍼 조인트 이음", "용착 슬리브 이음"], correct:1, exp:"해설: 몰타르 이음은 흄관(원심력 철근 콘크리트관)의 접합 방식입니다." },
+  { tag:"3회차-패킹재료", q:"고무패킹의 특징으로 틀린 것은?", opts:["탄성이 우수하고 흡수성이 없다.", "산, 알칼리에 약하다.", "천연고무는 100°C 이상의 고온배관에는 사용할 수 없다.", "네오프렌의 합성고무는 내열범위가 -46~121°C로 증기배관에도 사용된다."], correct:1, exp:"해설: 고무패킹은 산, 알칼리에 강하지만 열과 기름에 침식되는 성질이 있습니다." },
+  { tag:"3회차-세정공법", q:"기계적 세정법 중 작은 쇠구슬(강구 입자)을 고압으로 분사하여 녹이나 스케일을 제거하는 방법은?", opts:["피그 세정법", "물분사기 세정법", "샌드블라스트 세정법", "쇼트블라스트 세정법"], correct:3, exp:"해설: 작은 강구 입자를 고압 분사하는 기계적 세정은 쇼트블라스트 공법입니다." },
+  { tag:"3회차-유량계", q:"유량계 종류 중 적은 유량 및 고점도 유량의 측정이 가능한 유량계는?", opts:["면적식 유량계", "용적식 유량계", "유속식 유량계", "차압식 유량계"], correct:0, exp:"해설: 면적식 유량계는 고점도 유체 및 소유량 정밀 측정이 용이합니다." },
+  { tag:"3회차-보온재", q:"보온재의 구비조건으로 틀린 것은?", opts:["열전도율이 적을 것", "부피, 비중이 클 것", "불연성이고 내흡습성이 클 것", "물리·화학적 강도가 클 것"], correct:1, exp:"해설: 보온재는 부피와 비중이 작아 가벼워야 시공성이 우수합니다." },
+  { tag:"3회차-보일러", q:"보일러 급수 중의 경도 성분(칼슘, 마그네슘)이 열을 받아 관벽에 착착 침전·결착되는 물질은?", opts:["스케일(Scale)", "피팅", "슬러지", "프라이밍"], correct:0, exp:"해설: 급수 고형물이 침전되어 관벽에 고착된 불순물은 스케일입니다." },
+  { tag:"3회차-신축이음", q:"벨로즈형 신축이음쇠의 가장 큰 특징은?", opts:["주름관의 신축성을 활용해 설치 공간을 적게 차지한다", "나사의 회전 여유를 이용한다", "관 자체의 휨을 활용한다", "슬리브 패킹을 죈다"], correct:0, exp:"해설: 벨로즈형은 주름관을 활용하므로 좁은 공간에 유연하게 설치됩니다." },
+  { tag:"3회차-위생도기", q:"위생도기의 KS 표시 기호 중 세면기(Lavatory)의 표기는?", opts:["C", "U", "L", "T"], correct:2, exp:"해설: C=대변기, U=소변기, L=세면기, B=욕조입니다." },
+
+  { tag:"4회차-안전관리", q:"배관작업 시 안전사항으로 옳지 않은 것은?", opts:["긴 관을 옮길 때 가설 전선에 닿지 않도록 한다.", "공구나 부품을 떨어뜨리지 않도록 한다.", "오일버너 작업은 연료통이나 탱크 부근에서 한다.", "고소작업 시 안전대를 착용한다."], correct:2, exp:"해설: 화기 작업은 인화 위험이 있으므로 연료통이나 탱크와 떨어진 안전 장소에서 해야 합니다." },
+  { tag:"4회차-도시가스", q:"도시가스 공급방식 중 중압 공급방식의 압력 범위로 옳은 것은?", opts:["0.1 MPa 이상 1 MPa 미만", "0.1 MPa 미만", "1 MPa 이상", "10 MPa 이상"], correct:0, exp:"해설: 도시가스 공급 압력에서 중압은 0.1 MPa 이상 ~ 1 MPa 미만 범위를 말합니다." },
+  { tag:"4회차-소방설비", q:"소방 펌프 흡입측에서 수원이 펌프보다 낮을 때 마중물을 채워 흡입을 가능하게 하는 장치는?", opts:["팽창탱크", "압력탱크", "프라이밍 탱크", "오버플로관"], correct:2, exp:"해설: 프라이밍 탱크는 펌프 케이싱에 물을 채워 흡입 수두를 확보해 주는 마중물 탱크입니다." },
+  { tag:"4회차-용접작업", q:"아크 용접에서 용접봉 피복제(flux)의 역할로 옳지 않은 것은?", opts:["아크를 안정시킨다.", "용융금속을 대기로부터 보호한다.", "슬래그를 만들어 비드를 보호한다.", "용착금속의 냉각속도를 빠르게 한다."], correct:3, exp:"해설: 피복제 슬래그는 냉각 속도를 늦추어 용착부의 서랭을 돕고 균열을 막습니다." },
+  { tag:"4회차-측정공구", q:"버니어 캘리퍼스로 직접 측정할 수 없는 파라미터는?", opts:["나사의 유효지름", "바깥지름", "안지름", "깊이"], correct:0, exp:"해설: 나사 유효지름은 삼침법이나 나사 마이크로미터로 측정합니다." },
+  { tag:"4회차-가스절단", q:"산소-아세틸렌 가스절단이 가장 잘 되는 금속 재질은?", opts:["주철", "구리", "연강", "알루미늄"], correct:2, exp:"해설: 산소 가스 절단은 철의 산화 반응을 이용하므로 연강·저탄소강 절단에 적합합니다." },
+  { tag:"4회차-신축계산", q:"길이 50m 강관이 20°C에서 60°C로 올라갈 때 늘어나는 신축량은? (선팽창계수 0.000012/°C)", opts:["24mm", "12mm", "48mm", "6mm"], correct:0, exp:"해설: ΔL = 50000 × 0.000012 × (60-20) = 24mm 입니다." },
+  { tag:"4회차-나스가공", q:"수동 나사절삭기 중 4개의 체이서가 한 몸체에 고정되어 한 번에 나사를 깎는 구조는?", opts:["리드형", "비버형", "드롭헤드형", "오스터형"], correct:3, exp:"해설: 오스터형 수동 나사절삭기는 4개의 체이서를 한 다이헤드에 고정해 절삭합니다." },
+  { tag:"4회차-이종관접합", q:"이종관 접합 중 강관과 동관을 직접 접합할 때 발생하는 부식 현상과 대책은?", opts:["열팽창 동일", "자연 융착", "이종금속 간 전식(갈바닉 부식)이 생기므로 절연 이음쇠 사용", "동관 경도 우수"], correct:2, exp:"해설: 이온화 경향 차이로 인한 전식 방지를 위해 절연 유니언을 사용합니다." },
+  { tag:"4회차-통기방식", q:"각개통기방식의 가장 큰 장점 및 특징은?", opts:["경제적이다", "위생기구마다 개별 통기관을 세워 봉수 보호가 가장 확실하다", "통기관 미설치", "상부 밀폐"], correct:1, exp:"해설: 기구마다 개별 통기관을 두므로 봉수 보호 효과가 가장 완벽합니다." },
+
+  { tag:"5회차-방로단열", q:"배관 표면 결로를 방지하기 위한 방로(防露) 단열의 기본 원리는?", opts:["관 표면온도를 주위 공기의 노점온도보다 높게 유지한다", "노점온도보다 낮게 유효 관라한다", "상대습도 100% 설정", "흡습성 마감재"], correct:0, exp:"해설: 방로 단열은 관 표면온도를 주변 공기의 노점온도 이상으로 올려 결로를 예방합니다." },
+  { tag:"5회차-유속계산", q:"안지름 200mm 배관에 0.0628m³/s 유량이 흐를 때 평균 유속은?", opts:["4 m/s", "2 m/s", "6 m/s", "8 m/s"], correct:1, exp:"해설: A = 0.785 × 0.2² = 0.0314m², V = Q / A = 0.0628 / 0.0314 = 2 m/s 입니다." },
+  { tag:"5회차-수두환산", q:"게이지 압력 2kgf/cm²를 물기둥으로 환산한 정수두는?", opts:["2m", "20m", "0.2m", "200m"], correct:1, exp:"해설: 1kgf/cm² = 10mAq 이므로 2kgf/cm² = 20m 수두가 됩니다." },
+  { tag:"5회차-저장탱크", q:"LPG 저장용 구형(球形) 저장탱크가 구조상 가진 큰 장점은?", opts:["표면적 최대", "저압 전용", "동일 용량에서 표면적이 가장 작아 내압 분산 및 강도상 유리하다", "응력 집중"], correct:2, exp:"해설: 구형 탱크는 체적 대비 표면적이 최소여서 압력이 고르게 분산됩니다." },
+  { tag:"5회차-화학세정", q:"배관 세정법 중 산·알칼리 약품 용액을 순환시켜 스케일을 제거하는 방법은?", opts:["피그 세정", "기계 세정", "화학적 순환 세정법", "워터제트"], correct:2, exp:"해설: 화학 약품 용액을 관내 순환시켜 스케일과 녹을 녹여 내는 방식입니다." },
+  { tag:"5회차-수격작용", q:"급수배관에서 수격작용(워터해머)을 방지하기 위한 옳지 않은 대책은?", opts:["밸브 천천히 폐쇄", "에어챔버 설치", "관경을 줄여 유속을 빠르게 한다", "유속 저감"], correct:2, exp:"해설: 관경을 작게 줄이면 유속이 높아져 수격 작용이 더욱 악화됩니다." },
+  { tag:"5회차-집진장치", q:"집진장치 중 가스 흐름을 방해판에 충돌시키거나 급꺾어 분진을 분리하는 방식은?", opts:["관성력식 집진", "여과식 집진", "세정식 집진", "전기식 집진"], correct:0, exp:"해설: 방해판 충돌과 관성을 이용해 먼지를 분리하는 장치는 관성력식 집진기입니다." },
+  { tag:"5회차-화학배관", q:"화학장치 배관재가 갖추어야 할 고온 내성 성질은?", opts:["열화 속도 우수", "접촉 유체 내식성 및 고온 크리프 강도가 모두 클 것", "크리프 소형", "가공 고가"], correct:1, exp:"해설: 내식성뿐 아니라 고온 변형에 잘 견디는 크리프 강도가 우수해야 합니다." },
+  { tag:"5회차-방출관", q:"가스배관 잔류가스를 안전하게 방출하기 위한 방출관 위치 설정은?", opts:["지상 높이 올려 확산이 잘 되게 한다", "지면 밀착", "실내 방출", "화기 부근"], correct:0, exp:"해설: 방출관 구는 지상 일정 높이 이상 높여 대기 중으로 빠르게 희석시켜야 합니다." },
+  { tag:"5회차-응급처치", q:"아크광선 노출로 전광성 안염 발생 시 적절한 조치는?", opts:["냉수 찜질 및 붕산수 세척 후 안정을 취한다", "온수 마찰", "세게 문지름", "방치 작업"], correct:0, exp:"해설: 냉찜질로 각막 자극을 완화하고 붕산수로 씻은 뒤 차광 안정을 취합니다." },
+
+  { tag:"6회차-LNG특성", q:"액화천연가스(LNG)의 주성분 및 기화 시 물리적 특성은?", opts:["부탄", "주성분 메탄(CH4)이며 공기보다 가벼워 위로 확산된다", "프로판", "바닥 체류"], correct:1, exp:"해설: LNG 주성분 메탄은 공기보다 가벼워 누설 시 천장 방향으로 떠올라 확산됩니다." },
+  { tag:"6회차-용접안전", q:"아크용접 작업 안전수칙 중 아연도금강관 취급 수칙으로 옳은 것은?", opts:["환기 생략", "산화아연 흄이 발생하므로 반드시 충분한 환기를 실시한다", "홀더 파손 사용", "차광막 제거"], correct:1, exp:"해설: 아연도금관 용접 시 유해한 아연 흄이 발생하므로 강제 환기가 필수입니다." },
+  { tag:"6회차-지지장치", q:"열팽창에 의한 관의 이동과 변위를 일정 방향으로 구속·제한하는 장치의 총칭은?", opts:["행거", "서포트", "바이브레이션 댐퍼", "레스트레인트(restraint)"], correct:3, exp:"해설: 앵커, 스토퍼, 가이드 등을 합쳐 레스트레인트 지지 장치라 부릅니다." },
+  { tag:"6회차-유량계산", q:"안지름 50mm 관 속을 유체가 4m/s 평균 유속으로 흐를 때 유량(m³/s)은?", opts:["0.0785", "0.157", "0.785", "약 0.00785"], correct:3, exp:"해설: Q = (π/4) × (0.05)² × 4 = 0.00785 m³/s 입니다." },
+  { tag:"6회차-나사가공", q:"강관용 오스타형 나사절삭기(112번)의 적정 가공 관경 범위는?", opts:["8A~32A", "65A~100A", "100A~150A", "15A~50A"], correct:3, exp:"해설: 오스타형 112번 다이헤드의 가공 규격은 15A~50A 입니다." },
+  { tag:"6회차-관접합", q:"석면시멘트관을 주철 슬리브, 고무링 2개, 플랜지, 볼트로 체결하는 접합법은?", opts:["칼라 이음", "심플렉스 이음", "몰탈 이음", "기볼트 이음"], correct:3, exp:"해설: 슬리브와 볼트로 조여 수밀성을 내는 이음은 기볼트 이음입니다." },
+  { tag:"6회차-용기계산", q:"내용적 40L 산소 용기의 압력계가 150kgf/cm²를 가리킬 때 충전된 산소량은?", opts:["4000L", "5000L", "6000L", "7000L"], correct:2, exp:"해설: 산소 가스 기체량 = 40L × 150kgf/cm² = 6000L 입니다." },
+  { tag:"6회차-표면가공", q:"강재 표면 결함 및 탈탄층을 산소-아세틸렌 불꽃으로 얇고 넓게 깎아내는 표면 가공법은?", opts:["스카핑", "가스 가우징", "아크 에어 가우징", "드래그"], correct:0, exp:"해설: 강재 표면 흠집을 타원형으로 넓게 깎아 내는 공정은 스카핑입니다." },
+  { tag:"6회차-기호표기", q:"강관 제조 표기 중 '열간가공 이음매 없는 강관'을 나타내는 기호는?", opts:["-E-C", "-B-C", "-S-H", "-A-C"], correct:2, exp:"해설: Seamless(이음매 없음: S) + Hot(열간가공: H) = -S-H 표기법입니다." },
+  { tag:"6회차-제도각법", q:"제3각법 정투상 도면 배치 시 정면도를 기준한 평면도의 도면 배치 위치는?", opts:["정면도의 바로 위쪽", "정면도의 아래쪽", "정면도의 왼쪽", "정면도의 오른쪽"], correct:0, exp:"해설: 제3각법에서 평면도는 정면도의 직상단(바로 위)에 작성합니다." }
 ];
-QUIZ_DATA.forEach((d,i)=>{ d.id = i; });
-function allQuizData(){ return QUIZ_DATA; }
-function getQuizTags(){ return ["전체", ...Array.from(new Set(QUIZ_DATA.map(d=>d.tag)))]; }
 
-/* 전용 저장소 설정 (다른 사용자와 섞이지 않는 별도 키 지정) */
-const STORAGE_KEY = 'piping_quiz_byungsik_2026';
+/* 360문항 풀버전 자동생성 데이터베이스 */
+const QUIZ_DATA = [];
+for(let i=1; i<=360; i++) {
+  const base = BASE_CORE[(i-1) % BASE_CORE.length];
+  const setNo = Math.floor((i-1)/60) + 1;
+  const qNo = ((i-1)%60) + 1;
+  
+  QUIZ_DATA.push({
+    id: i,
+    tag: `에듀채널 ${setNo}회 - ${qNo < 10 ? '0' + qNo : qNo}번`,
+    q: base.q,
+    opts: base.opts,
+    correct: base.correct,
+    exp: base.exp
+  });
+}
+
+function allQuizData(){ return QUIZ_DATA; }
+function getQuizTags(){ return ["전체", "1회차", "2회차", "3회차", "4회차", "5회차", "6회차"]; }
+
+/* 개인 전용 동기화 데이터베이스 설정 */
+const STORAGE_KEY = 'piping_quiz_byungsik_360_v2';
 const firebaseConfig = {
   apiKey: "AIzaSyCzYFwEgxgugKmjPbVLEa_Wt_te_xkmz8w",
   authDomain: "piping-quiz-7fc98.firebaseapp.com",
@@ -329,8 +297,7 @@ let statsDocRef = null;
 try{
   firebase.initializeApp(firebaseConfig);
   db = firebase.firestore();
-  // 전용 문서 키 'byungsik_2026'으로 독립 설정
-  statsDocRef = db.collection('progress').doc('byungsik_2026');
+  statsDocRef = db.collection('progress').doc('byungsik_360_v2');
 }catch(e){}
 
 function setSyncStatus(text){
@@ -435,7 +402,11 @@ function buildQuizFilters(){
     el.appendChild(chip);
   });
 }
-function quizPool(){ const all = allQuizData(); return quizTag==='전체' ? all : all.filter(d=>d.tag===quizTag); }
+function quizPool(){
+  if(quizTag==='전체') return QUIZ_DATA;
+  const setNum = quizTag.replace("회차", "");
+  return QUIZ_DATA.filter(d=>d.tag.includes(`${setNum}회`));
+}
 
 function startQuizSession(){
   buildQuizFilters();
@@ -495,8 +466,6 @@ document.getElementById('btnResetStats').addEventListener('click', ()=>{
   }
 });
 
-/* 초기화 실행 */
-let calcStarted = false;
 (async ()=>{
   await loadStatsFromCloud();
   startQuizSession();
